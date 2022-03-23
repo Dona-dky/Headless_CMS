@@ -1,18 +1,38 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Bonjour"/>
+    <Course :data="course" v-for="course in courses" :key="'course-' + course.id"/>
+    <pre>{{ courses }}</pre>
+    
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import Course from "@/components/Course.vue"
 export default {
   name: 'HomeView',
   components: {
-    HelloWorld
+    Course,
+  },
+  data(){
+    return {
+      courses : [],
+    };
+  },
+  mounted() {
+    this.getAllCourses();
+  },
+  methods:{
+    //async ->
+    //this -> recup global
+    async getAllCourses(){
+      const { data, error } = await this.$supabase.from('courses').select()
+      if (data) {
+        this.courses = data;
+      }else{
+        console.log(error);
+      }
+    }
   }
 }
 </script>
